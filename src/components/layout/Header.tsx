@@ -1,4 +1,3 @@
-// src/components/layout/Header.tsx
 import { Link, useMatches } from 'react-router-dom';
 import { ShoppingCart } from 'lucide-react';
 import {
@@ -12,13 +11,13 @@ import { useCartStore } from '@/store/cartStore';
 
 export default function Header() {
   const cartCount = useCartStore((s) => s.cartCount);
+  const pageTitle  = useCartStore((s) => s.pageTitle);
   const matches   = useMatches();
   const isDetail  = matches.some((m) => m.pathname.includes('product'));
 
   return (
     <header className="w-full bg-white border-b border-gray-200 shadow-sm">
       
-      {/* Top bar: logo + cart */}
       <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
         <Link
           to="/"
@@ -36,7 +35,6 @@ export default function Header() {
         </Link>
       </div>
 
-      {/* Breadcrumb row */}
       <div className="max-w-7xl mx-auto px-6 pb-3">
         <Breadcrumb>
           <BreadcrumbList>
@@ -53,7 +51,7 @@ export default function Header() {
                 <BreadcrumbSeparator />
                 <BreadcrumbItem>
                   <span className="text-sm font-semibold text-gray-900">
-                    Detail
+                    {pageTitle}
                   </span>
                 </BreadcrumbItem>
               </>

@@ -1,6 +1,6 @@
 import type { Product, ProductDetail } from '@/types/product';
 
-const BASE_URL = 'https://itx-frontend-test.onrender.com';
+const BASE_URL = import.meta.env.VITE_BASE_URL ?? 'https://itx-frontend-test.onrender.com';
 
 export const getProducts = async (): Promise<Product[]> => {
   const res = await fetch(`${BASE_URL}/api/product`);

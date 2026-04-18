@@ -1,12 +1,15 @@
+import type { CartStore } from '@/types/cart';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
-export const useCartStore = create(
+export const useCartStore = create<CartStore>()(
   persist(
     (set) => ({
-      cartCount: 0,
+      cartCount:    0,
       setCartCount: (count) => set({ cartCount: count }),
+      pageTitle:    '',
+      setPageTitle: (title) => set({ pageTitle: title }),
     }),
-    { name: 'cart-storage' } // save in localStorage with this key
+    { name: 'cart-storage' }
   )
 );

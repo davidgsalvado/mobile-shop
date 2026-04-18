@@ -19,7 +19,6 @@ export default function ProductCard({ product, isNew = false }: ProductCardProps
     <Link to={`/product/${id}`} className="group block">
       <Card className="overflow-hidden border border-gray-200 shadow-sm hover:shadow-md transition-shadow duration-200 cursor-pointer">
 
-        {/* Image area */}
         <CardContent className="relative p-0 bg-gray-100 aspect-square flex items-center justify-center">
           {isNew && (
             <Badge className="absolute top-3 left-3 z-10 bg-orange-500 hover:bg-orange-500 text-white text-xs font-bold px-2 py-0.5 rounded-sm">
@@ -33,7 +32,6 @@ export default function ProductCard({ product, isNew = false }: ProductCardProps
           />
         </CardContent>
 
-        {/* Info area */}
         <CardFooter className="flex flex-col items-start gap-0.5 px-4 py-4">
           <span className="text-[11px] font-semibold tracking-widest text-gray-400 uppercase">
             {brand}
