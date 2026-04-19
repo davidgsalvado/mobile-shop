@@ -88,7 +88,6 @@ Detailed documentation is available in the [`docs/`](docs/) folder:
 - [Tech Stack](docs/tech-stack.md) — Complete list of dependencies and their purposes.
 - [API Integration](docs/api-integration.md) — Endpoint details, types, and caching strategy.
 - [Components](docs/components.md) — Reference for all components, hooks, and stores.
-- [Requirements Compliance](docs/requirements-compliance.md) — Checklist against the original specification.
 
 ## Design Decisions
 
