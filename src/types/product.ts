@@ -10,10 +10,10 @@ export interface ProductDetail extends Product {
     cpu:         string;
     ram:         string;
     os:          string;
-    displaySize: string;
+    displayResolution: string;
     battery:     string;
     primaryCamera:   string[];
-    secondaryCamera: string[];
+    secondaryCmera: string[];
     dimentions:  string;
     weight:      string;
     options: {

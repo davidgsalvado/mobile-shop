@@ -63,11 +63,11 @@ export default function ProductDetailPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
 
-        <div className="relative bg-white rounded-2xl border border-gray-200 shadow-sm flex items-center justify-center p-10 min-h-[420px]">
+        <div className="relative bg-white rounded-2xl border border-gray-200 shadow-sm flex items-center justify-center p-6 min-h-[340px]">
           <img
             src={product.imgUrl}
             alt={`${product.brand} ${product.model}`}
-            className="max-h-[380px] w-auto object-contain"
+            className="max-h-[300px] w-auto object-contain"
           />
 
           {isValid(product.battery) && (
@@ -94,17 +94,25 @@ export default function ProductDetailPage() {
             <h1 className="text-4xl font-black text-foreground tracking-tight leading-tight">
               {product.model}
             </h1>
-            <div className="flex items-baseline gap-2 mt-3">
-              <span className="text-3xl font-bold text-gray-900">
-                {isValid(product.price) ? `$${product.price}` : '0€'}
-              </span>
-              <span className="text-sm text-gray-400">Tax included</span>
-            </div>
+            {isValid(product.price) ? (
+              <div className="flex items-baseline gap-2 mt-3">
+                <span className="text-3xl font-bold text-gray-900">
+                  ${product.price}
+                </span>
+                <span className="text-lg text-gray-400 italic">Tax included</span>
+              </div>
+            ) : (
+              <div className="mt-3">
+                <span className="text-lg text-gray-400 italic">
+                  Price Unavailable
+                </span>
+              </div>
+            )}
           </div>
 
           <div className="grid grid-cols-2 gap-3">
             {specs.map(({ icon: Icon, label, value }) => (
-              <div key={label} className="bg-gray-50 border border-gray-100 rounded-xl p-3 flex flex-col gap-1">
+              <div key={label} className="bg-blue-50 border border-gray-100 rounded-xl p-3 flex flex-col gap-1">
                 <div className="flex items-center gap-1.5 text-gray-400">
                   <Icon size={16} />
                   <span className="text-[10px] font-semibold tracking-wider uppercase">{label}</span>

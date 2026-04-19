@@ -29,10 +29,14 @@ export default function Header() {
 
         <Link
           to="/"
-          className="flex items-center gap-2 text-blue-600 hover:text-blue-700 transition-colors"
+          className="relative inline-flex gap-2 text-blue-600 hover:text-blue-700 transition-colors"
         >
           <ShoppingCart size={22} />
-          <span className="text-base font-medium">({cartCount})</span>
+          {cartCount > 0 && (
+            <span className="absolute -top-2 -right-2.5 flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full bg-blue-600 text-white text-[10px] font-bold leading-none">
+              {cartCount > 99 ? '99+' : cartCount}
+            </span>
+          )}
         </Link>
       </div>
 
