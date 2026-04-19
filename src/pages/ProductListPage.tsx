@@ -1,4 +1,3 @@
-// src/pages/ProductListPage.tsx
 import { useState } from 'react';
 import { Search } from 'lucide-react';
 import { Input } from '@/components/ui/input';
@@ -17,8 +16,8 @@ export default function ProductListPage() {
     <div className="flex flex-col gap-8">
 
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
-        <div>
-          <h1 className="text-4xl font-black text-gray-900 tracking-tight">
+        <div className="flex flex-col items-start">
+          <h1 className="text-4xl font-black text-foreground tracking-tight">
             Smartphones
           </h1>
           <p className="text-gray-400 text-sm mt-1">

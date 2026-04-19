@@ -1,18 +1,20 @@
 import { useState, useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import {
-  ArrowLeft, Cpu, Monitor, Camera,
-  RulerIcon, ShoppingCart, Truck, BatteryFull,
+  ArrowLeft, ShoppingCart, Truck, BatteryFull
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useProductDetail } from '@/hooks/useProductDetail';
 import { useAddToCart } from '@/hooks/useAddToCart';
-import { useCartStore } from '@/store/cartStore';
+import { useProductSpecs } from '@/hooks/useProductSpecs';
+import { useDetailStore } from '@/store/detailStore';
+import { isValid } from '@/utils/validation';
 
 export default function ProductDetailPage() {
   const { id } = useParams<{ id: string }>();
   const { data: product, isLoading, isError } = useProductDetail(id!);
-  const setPageTitle = useCartStore((s) => s.setPageTitle);
+  const { specs, storages, colors } = useProductSpecs(product);
+  const setPageTitle = useDetailStore((s) => s.setPageTitle);
 
   useEffect(() => {
     if (product) setPageTitle(`${product.brand} ${product.model}`);
@@ -27,9 +29,9 @@ export default function ProductDetailPage() {
   const { mutate: addToCart, isPending } = useAddToCart();
 
   // Pre-select first option when data loads
-  if (product && selectedStorage === null && product.options.storages.length > 0)
+  if (product && selectedStorage === null && product.options.storages.length === 1)
     setSelectedStorage(product.options.storages[0].code);
-  if (product && selectedColor === null && product.options.colors.length > 0)
+  if (product && selectedColor === null && product.options.colors.length === 1)
     setSelectedColor(product.options.colors[0].code);
 
   if (isLoading) return <ProductDetailSkeleton />;
@@ -68,108 +70,100 @@ export default function ProductDetailPage() {
             className="max-h-[380px] w-auto object-contain"
           />
 
-          <div className="absolute bottom-5 right-5 bg-white border border-gray-200 shadow-md rounded-xl px-4 py-2.5 flex items-center gap-2">
-            <BatteryFull size={18} className="text-blue-600" />
-            <div className="flex flex-col leading-tight">
-              <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
-                Battery Life
-              </span>
-              <span className="text-sm font-bold text-gray-900">
-                {product.battery}
-              </span>
+          {isValid(product.battery) && (
+            <div className="absolute bottom-5 right-5 bg-white border border-gray-200 shadow-md rounded-xl px-4 py-2.5 flex items-center gap-2">
+              <BatteryFull size={18} className="text-blue-600" />
+              <div className="flex flex-col leading-tight">
+                <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
+                  Battery Life
+                </span>
+                <span className="text-sm font-bold text-gray-900">
+                  {product.battery}
+                </span>
+              </div>
             </div>
-          </div>
-        </div>
+          )}
+        </div>  
 
-        {/* RIGHT — Details + actions */}
         <div className="flex flex-col gap-6">
 
-          {/* Brand + model + price */}
           <div>
             <p className="text-xs font-bold tracking-widest text-blue-600 uppercase mb-1">
               {product.brand}
             </p>
-            <h1 className="text-4xl font-black text-gray-900 tracking-tight leading-tight">
+            <h1 className="text-4xl font-black text-foreground tracking-tight leading-tight">
               {product.model}
             </h1>
             <div className="flex items-baseline gap-2 mt-3">
               <span className="text-3xl font-bold text-gray-900">
-                ${product.price}
+                {isValid(product.price) ? `$${product.price}` : '0€'}
               </span>
               <span className="text-sm text-gray-400">Tax included</span>
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-3">
-            {[
-              { icon: <Cpu size={16} />,     label: 'Processor',           value: product.cpu },
-              { icon: <Monitor size={16} />, label: 'Display',             value: product.displaySize },
-              { icon: <Camera size={16} />,  label: 'Camera System',       value: Array.isArray(product.primaryCamera)
-                  ? product.primaryCamera.join(' + ')
-                  : product.primaryCamera },
-              { icon: <RulerIcon size={16} />,label: 'Dimensions & Weight', value: `${product.dimentions}, ${product.weight}` },
-            ].map(({ icon, label, value }) => (
-              <div
-                key={label}
-                className="bg-gray-50 border border-gray-100 rounded-xl p-3 flex flex-col gap-1"
-              >
+            {specs.map(({ icon: Icon, label, value }) => (
+              <div key={label} className="bg-gray-50 border border-gray-100 rounded-xl p-3 flex flex-col gap-1">
                 <div className="flex items-center gap-1.5 text-gray-400">
-                  {icon}
-                  <span className="text-[10px] font-semibold tracking-wider uppercase">
-                    {label}
-                  </span>
+                  <Icon size={16} />
+                  <span className="text-[10px] font-semibold tracking-wider uppercase">{label}</span>
                 </div>
-                <span className="text-sm font-semibold text-gray-900">{value}</span>
+                <span className="text-sm font-semibold text-foreground">{value}</span>
               </div>
             ))}
           </div>
 
-          <div className="flex flex-col gap-2">
-            <p className="text-xs font-bold tracking-widest text-gray-700 uppercase">
-              Storage Capacity
-            </p>
-            <div className="flex flex-wrap gap-2">
-              {product.options.storages.map(({ code, name }) => (
-                <button
-                  key={code}
-                  onClick={() => setSelectedStorage(code)}
-                  className={`px-4 py-2 rounded-full text-sm font-semibold border transition-colors
-                    ${selectedStorage === code
-                      ? 'bg-blue-600 text-white border-blue-600'
-                      : 'bg-gray-100 text-gray-700 border-gray-100 hover:border-blue-300'
-                    }`}
-                >
-                  {name}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div className="flex flex-col gap-2">
-            <div className="flex items-center justify-between">
+          {storages.length > 0 && (
+            <div className="flex flex-col gap-2">
               <p className="text-xs font-bold tracking-widest text-gray-700 uppercase">
-                Finish Color
+                Storage Capacity
               </p>
-              {selectedColorName && (
-                <span className="text-sm text-gray-500">{selectedColorName}</span>
-              )}
+              <div className="flex flex-wrap gap-2">
+                {storages.map(({ code, name }) => (
+                  <button
+                    key={code}
+                    onClick={() => setSelectedStorage(code)}
+                    className={`px-4 py-2 rounded-full text-sm font-semibold border transition-colors
+                      ${selectedStorage === code
+                        ? 'bg-blue-600 text-white border-blue-600'
+                        : 'bg-gray-100 text-gray-700 border-gray-100 hover:border-blue-300'
+                      }`}
+                  >
+                    {name}
+                  </button>
+                ))}
+              </div>
             </div>
-            <div className="flex gap-3">
-              {product.options.colors.map(({ code, name }) => (
-                <button
-                  key={code}
-                  title={name}
-                  onClick={() => setSelectedColor(code)}
-                  style={{ backgroundColor: name.toLowerCase().replace(/\s/g, '') }}
-                  className={`w-9 h-9 rounded-full border-2 transition-all
-                    ${selectedColor === code
-                      ? 'border-blue-600 scale-110 shadow-md'
-                      : 'border-transparent hover:border-gray-300'
-                    }`}
-                />
-              ))}
+          )}
+
+          {colors.length > 0 && (
+            <div className="flex flex-col gap-2">
+              <div className="flex items-center justify-between">
+                <p className="text-xs font-bold tracking-widest text-gray-700 uppercase">
+                  Finish Color
+                </p>
+                {selectedColorName && (
+                  <span className="text-sm text-gray-500">{selectedColorName}</span>
+                )}
+              </div>
+              <div className="flex gap-3">
+                {colors.map(({ code, name }) => (
+                  <button
+                    key={code}
+                    title={name}
+                    onClick={() => setSelectedColor(code)}
+                    style={{ backgroundColor: name.toLowerCase().replace(/\s/g, '') }}
+                    className={`w-9 h-9 rounded-full border-2 transition-all
+                      ${selectedColor === code
+                        ? 'border-blue-600 scale-110 shadow-md'
+                        : 'border-transparent hover:border-gray-300'
+                      }`}
+                  />
+                ))}
+              </div>
             </div>
-          </div>
+          )}
 
           <div className="flex flex-col gap-2 mt-2">
             <Button

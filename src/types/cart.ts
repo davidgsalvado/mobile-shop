@@ -11,6 +11,4 @@ export interface AddToCartResponse {
 export interface CartStore {
     cartCount: number;
     setCartCount: (count: number) => void;
-    pageTitle: string;
-    setPageTitle: (title: string) => void;
 }

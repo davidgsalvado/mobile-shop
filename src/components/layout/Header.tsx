@@ -7,11 +7,12 @@ import {
   BreadcrumbList,
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb';
+import { useDetailStore } from '@/store/detailStore';
 import { useCartStore } from '@/store/cartStore';
 
 export default function Header() {
   const cartCount = useCartStore((s) => s.cartCount);
-  const pageTitle  = useCartStore((s) => s.pageTitle);
+  const pageTitle  = useDetailStore((s) => s.pageTitle);
   const matches   = useMatches();
   const isDetail  = matches.some((m) => m.pathname.includes('product'));
 

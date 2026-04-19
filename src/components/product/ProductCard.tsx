@@ -6,6 +6,7 @@ import {
 } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import type { Product } from '@/types/product';
+import { isValid } from '@/utils/validation';
 
 interface ProductCardProps {
   product: Product;
@@ -39,8 +40,9 @@ export default function ProductCard({ product, isNew = false }: ProductCardProps
           <span className="text-base font-bold text-gray-900 leading-snug">
             {model}
           </span>
+          
           <span className="text-blue-600 font-semibold text-sm mt-1">
-            {price}€
+            {isValid(price) ? `$${price}` : '0€'}
           </span>
         </CardFooter>
 

@@ -1,4 +1,3 @@
-// src/api/cartApi.ts
 import type { AddToCartBody, AddToCartResponse } from '@/types/cart';
 
 const BASE_URL = import.meta.env.VITE_BASE_URL ?? 'https://itx-frontend-test.onrender.com';
