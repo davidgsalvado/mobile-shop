@@ -23,6 +23,7 @@ export default function ProductCard({ product }: ProductCardProps) {
           <img
             src={imgUrl}
             alt={`${brand} ${model}`}
+            loading='lazy'
             className="w-3/4 h-3/4 object-contain group-hover:scale-105 transition-transform duration-300"
           />
         </CardContent>

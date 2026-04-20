@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import {
   ArrowLeft, ShoppingCart, Truck, BatteryFull
@@ -28,6 +28,22 @@ export default function ProductDetailPage() {
 
   const { mutate: addToCart, isPending } = useAddToCart();
 
+  const effectiveStorage = useMemo(() =>
+    selectedStorage ?? (product?.options.storages.length === 1 ? product.options.storages[0].code : null),
+    [product, selectedStorage]
+  );
+
+  const effectiveColor = useMemo(() =>
+    selectedColor ?? (product?.options.colors.length === 1 ? product.options.colors[0].code : null), 
+    [product, selectedColor]
+  );
+
+  const handleAddToCart = useCallback(() => {
+    if (!effectiveStorage || !effectiveColor || !product) return;
+    addToCart({ id: product.id, colorCode: effectiveColor, storageCode: effectiveStorage });
+  }, [addToCart, product, effectiveColor, effectiveStorage]);
+
+
   // Pre-select first option when data loads
   if (product && selectedStorage === null && product.options.storages.length === 1)
     setSelectedStorage(product.options.storages[0].code);
@@ -40,13 +56,8 @@ export default function ProductDetailPage() {
   );
 
   const selectedColorName = product.options.colors.find(
-    (c) => c.code === selectedColor
+    (c) => c.code === effectiveColor
   )?.name;
-
-  const handleAddToCart = () => {
-    if (!selectedStorage || !selectedColor) return;
-    addToCart({ id: product.id, colorCode: selectedColor, storageCode: selectedStorage });
-  };
 
   return (
     <div className="flex flex-col gap-6">
@@ -133,7 +144,7 @@ export default function ProductDetailPage() {
                     key={code}
                     onClick={() => setSelectedStorage(code)}
                     className={`px-4 py-2 rounded-full text-sm font-semibold border transition-colors
-                      ${selectedStorage === code
+                      ${effectiveStorage === code
                         ? 'bg-blue-600 text-white border-blue-600'
                         : 'bg-gray-100 text-gray-700 border-gray-100 hover:border-blue-300'
                       }`}
@@ -151,7 +162,7 @@ export default function ProductDetailPage() {
                 <p className="text-xs font-bold tracking-widest text-gray-700 uppercase">
                   Finish Color
                 </p>
-                {selectedColorName && (
+                {effectiveColor && (
                   <span className="text-sm text-gray-500">{selectedColorName}</span>
                 )}
               </div>

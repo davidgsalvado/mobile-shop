@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { Search } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import ProductGrid from '@/components/product/ProductGrid';
@@ -8,9 +8,11 @@ export default function ProductListPage() {
   const { data: products = [], isLoading } = useProducts();
   const [search, setSearch] = useState('');
 
-  const filtered = products.filter(({ brand, model }) =>
-    `${brand} ${model}`.toLowerCase().includes(search.toLowerCase())
-  );
+  const filtered = useMemo(() => {
+    return products.filter(({ brand, model }) =>
+      `${brand} ${model}`.toLowerCase().includes(search.toLowerCase())
+    );
+  }, [products, search]);
 
   return (
     <div className="flex flex-col gap-8">
