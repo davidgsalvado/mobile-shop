@@ -43,13 +43,6 @@ export default function ProductDetailPage() {
     addToCart({ id: product.id, colorCode: effectiveColor, storageCode: effectiveStorage });
   }, [addToCart, product, effectiveColor, effectiveStorage]);
 
-
-  // Pre-select first option when data loads
-  if (product && selectedStorage === null && product.options.storages.length === 1)
-    setSelectedStorage(product.options.storages[0].code);
-  if (product && selectedColor === null && product.options.colors.length === 1)
-    setSelectedColor(product.options.colors[0].code);
-
   if (isLoading) return <ProductDetailSkeleton />;
   if (isError || !product) return (
     <p className="text-center text-gray-400 mt-16">Product not found.</p>
@@ -174,7 +167,7 @@ export default function ProductDetailPage() {
                     onClick={() => setSelectedColor(code)}
                     style={{ backgroundColor: name.toLowerCase().replace(/\s/g, '') }}
                     className={`w-9 h-9 rounded-full border-2 transition-all
-                      ${selectedColor === code
+                      ${effectiveColor === code
                         ? 'border-blue-600 scale-110 shadow-md'
                         : 'border-transparent hover:border-gray-300'
                       }`}
@@ -187,7 +180,7 @@ export default function ProductDetailPage() {
           <div className="flex flex-col gap-2 mt-2">
             <Button
               onClick={handleAddToCart}
-              disabled={isPending || !selectedStorage || !selectedColor}
+              disabled={isPending || !effectiveStorage || !effectiveColor}
               className="w-full h-14 text-base font-bold bg-blue-600 hover:bg-blue-700 rounded-xl flex items-center gap-2"
             >
               <ShoppingCart size={20} />
